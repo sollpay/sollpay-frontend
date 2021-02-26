@@ -1,26 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Router } from 'react-router';
+import { useGate } from 'effector-react';
 
-function App() {
+import { AppGate } from 'models/app';
+import { history } from 'lib/routing';
+import { Pages } from './routes';
+import { ModalManager } from './components/common/ModalManager';
+
+export const App: React.FC = () => {
+  useGate(AppGate);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router history={history}>
+        <Pages />
+      </Router>
+      <ModalManager />
+    </>
   );
-}
-
-export default App;
+};
