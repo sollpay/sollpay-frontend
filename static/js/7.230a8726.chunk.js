@@ -1,0 +1,2 @@
+(this["webpackJsonpsoldonate-client"]=this["webpackJsonpsoldonate-client"]||[]).push([[7],{321:function(t,n,e){"use strict";e.d(n,"a",(function(){return i}));var o=e(1);function i(t){return Object(o.a)({tag:"svg",attr:{viewBox:"0 0 512 512"},child:[{tag:"path",attr:{fill:"none",strokeLinecap:"round",strokeLinejoin:"round",strokeWidth:"32",d:"M368 368L144 144m224 0L144 368"}}]})(t)}}}]);
+//# sourceMappingURL=7.230a8726.chunk.js.map
