@@ -225,7 +225,7 @@ export const Subscribe: FC<Props> = ({ planAddress }) => {
       <Group className={classNames({ isDisabled })}>
         {renderSubscriptionPlan()}
       </Group>
-      <SubscribeButton onClick={handleSubscribeClick} disabled={isDisabled}>
+      <SubscribeButton primary onClick={handleSubscribeClick} disabled={isDisabled}>
         {renderButtonText()}
       </SubscribeButton>
     </WrapperCard>

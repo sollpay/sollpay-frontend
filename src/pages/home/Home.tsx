@@ -81,12 +81,14 @@ const DocumentationButton = styled(ButtonStyled)`
 const GitHubA = styled.a`
   display: inline-block;
   margin: 40px 0 0;
-`
+`;
 
 const Section = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  margin-bottom: 50px;
 `;
 
 const Title = styled.div`
@@ -109,6 +111,14 @@ const SectionColumn = styled.div`
   display: flex;
   align-items: center;
 `;
+
+const SubscribePageA = styled.a`
+  padding: 5px 10px;
+  
+  background: #fff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+`
 
 export const Home = () => {
   const connected = useStore($connected);
@@ -148,6 +158,12 @@ export const Home = () => {
                 </HeroDescription>
               </SectionColumn>
             </SectionContent>
+          </Section>
+          <Section>
+            <HeroDescription>Also you can use subscribe page:</HeroDescription>
+            <SubscribePageA href="https://sollpay.com/subscribe/5eg3zjHtV7SkaxsHUJtxLeMDte2SFF1rV7ooGt4YwXSr">
+              https://sollpay.com/subscribe/5eg3zjHtV7SkaxsHUJtxLeMDte2SFF1rV7ooGt4YwXSr
+            </SubscribePageA>
           </Section>
         </Container>
       </MainContainer>
