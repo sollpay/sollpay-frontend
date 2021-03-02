@@ -78,6 +78,11 @@ const DocumentationButton = styled(ButtonStyled)`
   }
 `;
 
+const GitHubA = styled.a`
+  display: inline-block;
+  margin: 40px 0 0;
+`
+
 const Section = styled.div`
   display: flex;
   flex-direction: column;
@@ -125,10 +130,11 @@ export const Home = () => {
               <ConnectButton primary onClick={connectAndCreateClicked}>
                 {connected ? 'Sign In' : 'Connect and Sign In'}
               </ConnectButton>
-              <a href="#">
+              <a href="https://docs.sollpay.com/">
                 <DocumentationButton hollow>Documentation</DocumentationButton>
               </a>
             </ButtonsWrapper>
+            <GitHubA href="#">GitHub</GitHubA>
           </Hero>
 
           <Section>
