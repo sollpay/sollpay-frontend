@@ -2,8 +2,9 @@ import React, { FC } from 'react';
 
 import { styled } from '@linaria/react';
 import { MainContainer } from '../MainContainer';
-import { Header } from './Header';
-import { LeftNavMenu } from './LeftNavMenu';
+import { Header } from '../Header';
+import { CustomerMenu } from './CustomerMenu';
+import { UserMenu } from './UserMenu';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -21,15 +22,21 @@ const Container = styled.div`
 
 const Content = styled.div``;
 
-interface Props {}
+interface Props {
+  type: 'user' | 'customer';
+}
 
-export const Layout: FC<Props> = ({ children }) => {
+export const Layout: FC<Props> = ({ type, children }) => {
   return (
     <Wrapper>
       <Header />
       <MainContainer>
         <Container>
-          <LeftNavMenu />
+          {type === 'customer' ? (
+            <CustomerMenu />
+          ) : (type === 'user' ? (
+            <UserMenu />
+          ) : null)}
           <Content>{children}</Content>
         </Container>
       </MainContainer>

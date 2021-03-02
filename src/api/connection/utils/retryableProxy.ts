@@ -10,7 +10,7 @@ interface RetryOptions {
 
 const defaultRetryOptions: RetryOptions = {
   // max number of retries
-  count: 10,
+  count: 5,
   intervalMS: 200,
   // every retry, multiply the interval by this amount
   backoutMultiplier: 1.5,

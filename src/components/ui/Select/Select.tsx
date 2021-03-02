@@ -57,9 +57,6 @@ const SelectListContainer = styled.div`
   border-radius: 5px;
   box-shadow: rgba(19, 45, 74, 0.12) 0 0 0 1px,
     rgba(0, 0, 0, 0.14) 0 7px 14px -4px;
-
-  transition: opacity 100ms ease-out 0s, transform 100ms ease-out 0s,
-    transform 100ms ease-out 0s;
 `;
 
 const SelectList = styled.div`

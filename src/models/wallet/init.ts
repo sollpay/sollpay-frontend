@@ -1,4 +1,4 @@
-import { forward } from 'effector/effector.cjs';
+import { forward } from 'effector';
 import { persist } from 'effector-storage/local';
 import * as WalletAPI from 'api/wallet';
 import { WalletEvent } from 'api/wallet/Wallet';

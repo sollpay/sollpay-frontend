@@ -7,8 +7,10 @@ import { Modal } from 'components/common/Modal';
 import { Input } from 'components/ui/Input';
 import { SelectValueType, Select } from 'components/ui/Select';
 import { Button } from 'components/ui/Button';
-import { $tokens } from 'models/wallet';
+import { $availableTokens } from 'models/wallet';
 import { createSubscriptionPlanFx } from 'models/connection';
+import { Loader } from 'components/common/Loader';
+import { $store } from './model';
 
 const FormRow = styled.div`
   display: flex;
@@ -47,25 +49,26 @@ interface Props {
 }
 
 export const Plan: FC<Props> = ({ close }) => {
-  const [selectedTokenMint, setSelectedTokenMint] = useState<SelectValueType>();
+  const [selectedToken, setSelectedToken] = useState<SelectValueType>();
   const [
     selectedSubscriptionTimeframe,
     setSelectedSubscriptionTimeframe,
   ] = useState<SelectValueType>();
   const [maxAmount, setMaxAmount] = useState<string>();
-  const tokens = useStore($tokens);
+  const availableTokens = useStore($availableTokens);
+  const { isLoading } = useStore($store);
 
   const itemsTokens = useMemo(
     () =>
-      tokens.map((token) => ({
+      availableTokens.map((token) => ({
         title: token.tokenSymbol,
         value: token.mintAddress,
       })),
-    [tokens],
+    [availableTokens],
   );
 
-  const handleTokenMintChange = (nextValue: SelectValueType) => {
-    setSelectedTokenMint(nextValue);
+  const handleTokenChange = (nextValue: SelectValueType) => {
+    setSelectedToken(nextValue);
   };
 
   const handleSubscriptionTimeframeChange = (nextValue: SelectValueType) => {
@@ -77,12 +80,14 @@ export const Plan: FC<Props> = ({ close }) => {
     setMaxAmount(maxAmount);
   };
 
-  const handleSubmit = () => {
-    createSubscriptionPlanFx({
-      tokenMint: new PublicKey(String(selectedTokenMint)),
+  const handleSubmit = async () => {
+    await createSubscriptionPlanFx({
+      token: new PublicKey(String(selectedToken)),
       maxAmount: Number(maxAmount),
       subscriptionTimeframe: Number(selectedSubscriptionTimeframe),
     });
+
+    close();
   };
 
   return (
@@ -92,9 +97,9 @@ export const Plan: FC<Props> = ({ close }) => {
           <Label>Token</Label>
           <Select
             placeholder="Choose token"
-            selected={selectedTokenMint}
+            selected={selectedToken}
             items={itemsTokens}
-            onChange={handleTokenMintChange}
+            onChange={handleTokenChange}
           />
         </FormGroup>
 
@@ -126,7 +131,9 @@ export const Plan: FC<Props> = ({ close }) => {
       </FormGroup>
 
       <Footer>
-        <Button onClick={handleSubmit}>Create Plan</Button>
+        <Button primary onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'Create Plan'}
+        </Button>
       </Footer>
     </Modal>
   );

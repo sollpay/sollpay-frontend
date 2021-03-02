@@ -18,7 +18,7 @@ export const globals = css`
     html,
     body,
     #root {
-      height: 100%;
+      min-height: 0;
     }
 
     body {
@@ -28,6 +28,11 @@ export const globals = css`
       font-feature-settings: 'kern';
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
     }
   }
 `;

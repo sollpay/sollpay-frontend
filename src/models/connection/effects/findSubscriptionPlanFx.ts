@@ -1,5 +1,5 @@
 import { getConnection } from 'api/connection';
-import { parseSubscriptionPlanData } from 'lib/layouts/subscriptionPlan';
+import { parseSubscriptionPlanData } from 'lib/sollpay/layouts/subscriptionPlan';
 import { findSubscriptionPlanFx } from '..';
 
 findSubscriptionPlanFx.use(async ({ planAddress }) => {

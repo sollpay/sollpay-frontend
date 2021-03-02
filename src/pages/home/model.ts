@@ -10,5 +10,5 @@ connectAndCreateClicked.watch(async () => {
   if (!connected) {
     await connectFx();
   }
-  history.push('/subscriptions');
+  history.push('/select');
 });

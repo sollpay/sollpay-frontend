@@ -1,7 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
 
-export const RECCURING_PAYMENTS_PROGRAM_ID = new PublicKey(
-  '96onsBc3kn3fxQAo5qd2ExNffUiKCM9JqWneSed81SRW',
+export const SOLLPAY_PROGRAM_ID = new PublicKey(
+  '359yyEjBXTGySfXnraGfS74tP2sTH4bZiPxErLvL3VqE',
 );
-export const SUBSCRIPTION_PLAN_STORAGE_SIZE = 81;
-export const SUBSCRIPTION_STORAGE_SIZE = 162;
+
+export const SOLLPAY_FEE_ACCOUNT = new PublicKey(
+  '7WCEUck5xmRLKrq1PrvQWxNNNafrsbbNv1dABns83RtZ',
+);

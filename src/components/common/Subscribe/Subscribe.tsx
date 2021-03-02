@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { Button } from 'components/ui/Button';
 import { createSubscriptionFx } from 'models/connection';
 import { connectFx } from 'models/wallet';
+import { shortAddress } from 'utils/common';
 import { Card } from '../Card';
 import { $store, SubscribeGate } from './model';
 import rocketImg from './rocket.png';
@@ -18,7 +19,7 @@ const WrapperCard = styled(Card)`
   flex-direction: column;
   align-items: center;
 
-  min-width: 230px;
+  width: 230px;
 
   background-image: url('${bgImg}');
   background-repeat: no-repeat;
@@ -56,7 +57,7 @@ const Rocket = styled.div`
   background: url('${rocketImg}') no-repeat 50% 50%;
   background-size: 50px 60px;
 
-  &.isLoading {
+  &.isFetching {
     animation: fly 0.5s linear infinite;
   }
 `;
@@ -94,22 +95,60 @@ const SubscribeButton = styled(Button)`
   width: 100%;
 `;
 
+const renderSubscriptionTimeframe = (subscriptionTimeframe: number) => {
+  switch (subscriptionTimeframe) {
+    case 1:
+      return 'daily';
+    case 7:
+      return 'weekly';
+    case 30:
+      return 'monthly';
+    case 365:
+      return 'yearly';
+    default:
+      return subscriptionTimeframe;
+  }
+};
+
 interface Props {
   planAddress: string;
 }
 
+// TODO: make less compexity
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const Subscribe: FC<Props> = ({ planAddress }) => {
   useGate(SubscribeGate, { planAddress: new PublicKey(planAddress) });
-  const { connected, subscriptionPlan, tokens, isLoading, isSubscribing } = useStore($store);
+  const {
+    connected,
+    subscriptionPlan,
+    availableTokens,
+    tokenAccounts,
+    isLoadingPlan,
+    isLoadingTokenAccounts,
+    isSubscribing,
+    isFetching,
+  } = useStore($store);
 
-  const token = useMemo(
+  const tokenMeta = useMemo(
     () =>
-      tokens.find(
+      availableTokens.find(
         (token) =>
-          token.mintAddress === subscriptionPlan?.data.tokenMint.toBase58(),
+          token.mintAddress === subscriptionPlan?.data.token.toBase58(),
       ),
-    [tokens, subscriptionPlan],
+    [availableTokens, subscriptionPlan],
   );
+
+  const tokenAccount = useMemo(() => {
+    if (tokenAccounts.length === 0) {
+      return null;
+    }
+
+    return tokenAccounts.sort(
+      (a, b) =>
+        a.account.data.parsed.info.tokenAmount.uiAmount -
+        b.account.data.parsed.info.tokenAmount.uiAmount,
+    )[0];
+  }, [tokenAccounts]);
 
   const handleSubscribeClick = async () => {
     if (!subscriptionPlan) {
@@ -120,33 +159,25 @@ export const Subscribe: FC<Props> = ({ planAddress }) => {
       await connectFx();
     }
 
-    // TODO: !!!
-    createSubscriptionFx({
-      subscriptionPlanAddress: new PublicKey(planAddress),
-      tokenAddress: subscriptionPlan.data.tokenMint,
+    if (!tokenAccount) {
+      return;
+    }
+
+    await createSubscriptionFx({
+      subscriptionPlanAccount: new PublicKey(planAddress),
+      tokenAccount: tokenAccount.pubkey,
+      authority: subscriptionPlan.data.authority,
       subscriptionTimeframe: subscriptionPlan.data.subscriptionTimeframe.toNumber(),
       maxAmount: subscriptionPlan.data.maxAmount.toNumber(),
     });
   };
 
-  const renderSubscriptionTimeframe = (subscriptionTimeframe: number) => {
-    switch (subscriptionTimeframe) {
-      case 1:
-        return 'daily';
-      case 7:
-        return 'weekly';
-      case 30:
-        return 'monthly';
-      case 365:
-        return 'yearly';
-      default:
-        return subscriptionTimeframe;
-    }
-  };
-
   const renderButtonText = () => {
-    if (isLoading) {
-      return 'Loading...';
+    if (isLoadingPlan) {
+      return 'Loading plan...';
+    }
+    if (isLoadingTokenAccounts) {
+      return 'Loading tokens...';
     }
     if (isSubscribing) {
       return 'Subscribing...';
@@ -154,27 +185,45 @@ export const Subscribe: FC<Props> = ({ planAddress }) => {
     if (connected) {
       return 'Subscribe';
     }
-    return 'Connect and Subscribe';
+    return 'Connect';
   };
 
-  const isDisabled = !subscriptionPlan && isLoading && isSubscribing;
+  const renderSubscriptionPlan = () => {
+    if (!subscriptionPlan) {
+      return null;
+    }
+
+    if (!tokenAccount && connected) {
+      return (
+        <>
+          You don't have{' '}
+          {tokenMeta?.tokenSymbol ||
+            shortAddress(subscriptionPlan.data.token.toBase58())}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Price>
+          {subscriptionPlan.data.maxAmount.toNumber()}{' '}
+          {tokenMeta?.tokenSymbol || subscriptionPlan.data.token.toBase58()}{' '}
+        </Price>
+        {renderSubscriptionTimeframe(
+          subscriptionPlan.data.subscriptionTimeframe.toNumber(),
+        )}
+      </>
+    );
+  };
+
+  const isDisabled = !subscriptionPlan || isFetching;
 
   return (
     <WrapperCard>
       <Title>Payment</Title>
-      <Rocket className={classNames({ isLoading })} />
+      <Rocket className={classNames({ isFetching })} />
       <Group className={classNames({ isDisabled })}>
-        {subscriptionPlan ? (
-          <>
-            <Price>
-              {subscriptionPlan.data.maxAmount.toNumber()}{' '}
-              {token?.tokenSymbol || subscriptionPlan.data.tokenMint.toBase58()}{' '}
-            </Price>
-            {renderSubscriptionTimeframe(
-              subscriptionPlan.data.subscriptionTimeframe.toNumber(),
-            )}
-          </>
-        ) : null}
+        {renderSubscriptionPlan()}
       </Group>
       <SubscribeButton onClick={handleSubscribeClick} disabled={isDisabled}>
         {renderButtonText()}

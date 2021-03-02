@@ -19,7 +19,7 @@ export const $type = app.createStore<WalletType>(WalletType.SOLLET);
 
 export const $connected = app.createStore<boolean>(false);
 
-export const $tokens = $cluster.map((cluster) => TOKENS[cluster] || []);
+export const $availableTokens = $cluster.map((cluster) => TOKENS[cluster] || []);
 
 // export const $connection = app.createStore<Connection | null>(null);
 //

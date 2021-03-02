@@ -3,24 +3,21 @@ import {
   ParsedAccountData,
   PublicKey,
   PublicKeyAndAccount,
-  RpcResponseAndContext,
 } from '@solana/web3.js';
 import { Numberu64 } from '@solana/spl-token-swap';
 import { app } from '../app';
-import { ISubscriptionPlanRecord } from './types';
+import { ISubscriptionPlanRecord, ISubscriptionRecord } from './types';
 
 export const getParsedTokenAccountsByOwnerFx = app.createEffect<
   {
-    tokenMint?: PublicKey;
+    token?: PublicKey;
   },
-  RpcResponseAndContext<
-    { pubkey: PublicKey; account: AccountInfo<ParsedAccountData> }[]
-  >
+  { pubkey: PublicKey; account: AccountInfo<ParsedAccountData> }[]
 >();
 
 export const createSubscriptionPlanFx = app.createEffect<
   {
-    tokenMint: PublicKey;
+    token: PublicKey;
     subscriptionTimeframe: number;
     maxAmount: number;
   },
@@ -37,10 +34,16 @@ export const findSubscriptionPlanFx = app.createEffect<
   AccountInfo<ISubscriptionPlanRecord> | null
 >();
 
+export const findSubscriptionsFx = app.createEffect<
+  void,
+  PublicKeyAndAccount<ISubscriptionRecord>[]
+>();
+
 export const createSubscriptionFx = app.createEffect<
   {
-    subscriptionPlanAddress: PublicKey;
-    tokenAddress: PublicKey;
+    subscriptionPlanAccount: PublicKey;
+    authority: PublicKey;
+    tokenAccount: PublicKey;
     subscriptionTimeframe: number | Numberu64;
     maxAmount: number | Numberu64;
   },

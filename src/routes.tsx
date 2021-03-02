@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { lazy, useMemo } from 'react';
 import { Redirect } from 'react-router-dom';
 import { renderRoutes, RouteConfig } from 'react-router-config';
 
@@ -6,8 +6,7 @@ import { useStore } from 'effector-react';
 
 import { Home } from 'pages/home';
 import { NotFound } from 'pages/notFound';
-import { Plans } from 'pages/plans';
-import { Subscriptions } from 'pages/subscriptions';
+import { Select } from 'pages/select';
 import { $connected } from 'models/wallet';
 
 export const makeRoutes = (isAuth: boolean): RouteConfig[] =>
@@ -18,16 +17,45 @@ export const makeRoutes = (isAuth: boolean): RouteConfig[] =>
       component: Home,
     },
     {
-      path: `/plans`,
+      path: `/select`,
       exact: true,
       needAuth: true,
-      component: Plans,
+      component: Select,
     },
     {
-      path: `/subscriptions`,
+      path: `/subscribe/:planAddress`,
+      exact: true,
+      component: lazy(() => import('pages/subscribe')),
+    },
+    {
+      path: `/customer`,
       exact: true,
       needAuth: true,
-      component: Subscriptions,
+      component: () => <Redirect to="/customer/subscriptions" />,
+    },
+    {
+      path: `/customer/plans`,
+      exact: true,
+      needAuth: true,
+      component: lazy(() => import('pages/customer/plans')),
+    },
+    {
+      path: `/customer/subscriptions`,
+      exact: true,
+      needAuth: true,
+      component: lazy(() => import('pages/customer/subscriptions')),
+    },
+    {
+      path: `/user`,
+      exact: true,
+      needAuth: true,
+      component: () => <Redirect to="/user/subscriptions" />,
+    },
+    {
+      path: `/user/subscriptions`,
+      exact: true,
+      needAuth: true,
+      component: lazy(() => import('pages/user/subscriptions')),
     },
     {
       path: '*',

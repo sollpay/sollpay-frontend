@@ -1,6 +1,11 @@
-import { combine, forward, guard, merge } from 'effector';
+import { combine, forward, guard } from 'effector';
 import { createGate } from 'effector-react';
-import { AccountInfo, PublicKey } from '@solana/web3.js';
+import {
+  AccountInfo,
+  ParsedAccountData,
+  PublicKey,
+  RpcResponseAndContext,
+} from '@solana/web3.js';
 
 import { app } from 'models/app';
 import {
@@ -9,7 +14,7 @@ import {
   getParsedTokenAccountsByOwnerFx,
 } from 'models/connection';
 import { ISubscriptionPlanRecord } from 'models/connection/types';
-import { $connected, $tokens } from 'models/wallet';
+import { $connected, $availableTokens } from 'models/wallet';
 
 export const SubscribeGate = createGate<{ planAddress: PublicKey }>();
 
@@ -17,13 +22,35 @@ export const $subscriptionPlan = app.createStore<AccountInfo<ISubscriptionPlanRe
   null,
 );
 
+export const $tokenAccounts = app.createStore<
+  { pubkey: PublicKey; account: AccountInfo<ParsedAccountData> }[]
+>([]);
+
 export const $store = combine({
   connected: $connected,
   subscriptionPlan: $subscriptionPlan,
-  tokens: $tokens,
-  isLoading: findSubscriptionPlanFx.pending,
+  availableTokens: $availableTokens,
+  tokenAccounts: $tokenAccounts,
+  isLoadingPlan: findSubscriptionPlanFx.pending,
+  isLoadingTokenAccounts: getParsedTokenAccountsByOwnerFx.pending,
   isSubscribing: createSubscriptionFx.pending,
+  isFetching: combine(
+    findSubscriptionPlanFx.pending,
+    createSubscriptionFx.pending,
+    getParsedTokenAccountsByOwnerFx.pending,
+    (one, two, three) => one || two || three,
+  ),
 });
+
+$subscriptionPlan.on(
+  findSubscriptionPlanFx.doneData,
+  (_, subscriptionPlan) => subscriptionPlan,
+);
+
+$tokenAccounts.on(
+  getParsedTokenAccountsByOwnerFx.doneData,
+  (_, tokens) => tokens,
+);
 
 forward({
   from: SubscribeGate.open,
@@ -32,14 +59,9 @@ forward({
 
 guard({
   source: $subscriptionPlan.map((subscriptionPlan) => ({
-    tokenMint: subscriptionPlan?.data.tokenMint,
+    token: subscriptionPlan?.data.token,
   })),
   clock: $connected,
-  filter: ({ tokenMint }, connected) => Boolean(tokenMint) && connected,
+  filter: ({ token }, connected) => Boolean(token) && connected,
   target: getParsedTokenAccountsByOwnerFx,
 });
-
-$subscriptionPlan.on(
-  findSubscriptionPlanFx.doneData,
-  (_, subscriptionPlan) => subscriptionPlan,
-);

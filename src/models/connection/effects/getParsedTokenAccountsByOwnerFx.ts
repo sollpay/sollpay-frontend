@@ -1,17 +1,16 @@
-import { TOKEN_PROGRAM_ID, AccountInfo } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { getConnection } from 'api/connection';
 import { getWallet } from 'api/wallet';
 import { getParsedTokenAccountsByOwnerFx } from '..';
 
-getParsedTokenAccountsByOwnerFx.use(async ({ tokenMint }) => {
+getParsedTokenAccountsByOwnerFx.use(async ({ token }) => {
   const connection = getConnection();
   const wallet = getWallet().pubkey;
 
   const result = await connection.getParsedTokenAccountsByOwner(wallet, {
     programId: TOKEN_PROGRAM_ID,
-    mint: tokenMint,
+    mint: token,
   });
-  console.log(111, result);
 
-  return result;
+  return result.value.map(account => account);
 });

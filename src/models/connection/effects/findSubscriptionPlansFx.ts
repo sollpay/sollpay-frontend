@@ -4,20 +4,16 @@ import { complement, isNil } from 'ramda';
 import { getConnection } from 'api/connection';
 import { getWallet } from 'api/wallet';
 import {
-  RECCURING_PAYMENTS_PROGRAM_ID,
-  SUBSCRIPTION_PLAN_STORAGE_SIZE,
-} from 'constants/common';
-import {
   parseSubscriptionPlanData,
   SubscriptionPlanLayout,
-} from 'lib/layouts/subscriptionPlan';
+} from 'lib/sollpay/layouts/subscriptionPlan';
 import { GetProgramAccountsRpcResult } from '../structs';
 import { findSubscriptionPlansFx } from '..';
+import { SOLLPAY_PROGRAM_ID } from '../../../constants/common';
 
 findSubscriptionPlansFx.use(async () => {
   const connection = getConnection();
   const wallet = getWallet().pubkey;
-  const programId = RECCURING_PAYMENTS_PROGRAM_ID;
 
   const filters = [
     {
@@ -27,12 +23,12 @@ findSubscriptionPlansFx.use(async () => {
       },
     },
     {
-      dataSize: SUBSCRIPTION_PLAN_STORAGE_SIZE,
+      dataSize: SubscriptionPlanLayout.span,
     },
   ];
 
   const unsafeRes = await connection._rpcRequest('getProgramAccounts', [
-    programId.toBase58(),
+    SOLLPAY_PROGRAM_ID.toBase58(),
     {
       commitment: connection.commitment,
       filters,
@@ -44,7 +40,7 @@ findSubscriptionPlansFx.use(async () => {
   if (res.error) {
     throw new Error(
       'failed to get accounts owned by program ' +
-        programId.toBase58() +
+        SOLLPAY_PROGRAM_ID.toBase58() +
         ': ' +
         res.error.message,
     );
