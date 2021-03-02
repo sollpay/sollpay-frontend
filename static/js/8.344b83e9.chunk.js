@@ -1,0 +1,2 @@
+(this["webpackJsonpsollpay-frontend"]=this["webpackJsonpsollpay-frontend"]||[]).push([[8],{321:function(t,n,o){"use strict";o.d(n,"a",(function(){return r}));var e=o(1);function r(t){return Object(e.a)({tag:"svg",attr:{viewBox:"0 0 512 512"},child:[{tag:"path",attr:{fill:"none",strokeLinecap:"round",strokeLinejoin:"round",strokeWidth:"32",d:"M368 368L144 144m224 0L144 368"}}]})(t)}}}]);
+//# sourceMappingURL=8.344b83e9.chunk.js.map
