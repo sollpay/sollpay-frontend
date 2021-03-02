@@ -144,7 +144,7 @@ export const Home = () => {
                 <DocumentationButton hollow>Documentation</DocumentationButton>
               </a>
             </ButtonsWrapper>
-            <GitHubA href="#">GitHub</GitHubA>
+            <GitHubA href="https://github.com/sollpay">GitHub</GitHubA>
           </Hero>
 
           <Section>
