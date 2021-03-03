@@ -121,7 +121,9 @@ const SubscribePageA = styled.a`
 `
 
 export const Home = () => {
+  console.log(111, window.location)
   const connected = useStore($connected);
+  const demoPlanAddress = "5eg3zjHtV7SkaxsHUJtxLeMDte2SFF1rV7ooGt4YwXSr";
 
   return (
     <Wrapper>
@@ -150,7 +152,7 @@ export const Home = () => {
           <Section>
             <Title>Demo</Title>
             <SectionContent>
-              <Subscribe planAddress="5eg3zjHtV7SkaxsHUJtxLeMDte2SFF1rV7ooGt4YwXSr" />
+              <Subscribe planAddress={demoPlanAddress} />
               <SectionColumn>
                 <HeroDescription>
                   Make approve of transactions to an address every X days. You
@@ -161,8 +163,8 @@ export const Home = () => {
           </Section>
           <Section>
             <HeroDescription>Also you can use subscribe page:</HeroDescription>
-            <SubscribePageA href="https://sollpay.com/subscribe/5eg3zjHtV7SkaxsHUJtxLeMDte2SFF1rV7ooGt4YwXSr">
-              https://sollpay.com/subscribe/5eg3zjHtV7SkaxsHUJtxLeMDte2SFF1rV7ooGt4YwXSr
+            <SubscribePageA href={`${window.location.origin}/#/subscribe/${demoPlanAddress}`}>
+              {`${window.location.origin}/#/subscribe/${demoPlanAddress}`}
             </SubscribePageA>
           </Section>
         </Container>
