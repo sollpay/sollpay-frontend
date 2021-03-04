@@ -7,6 +7,7 @@ import { Header } from 'components/common/Header';
 import { Subscribe } from 'components/common/Subscribe';
 import { MainContainer } from 'components/common/MainContainer';
 import { connectAndCreateClicked } from './model';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -112,7 +113,7 @@ const SectionColumn = styled.div`
   align-items: center;
 `;
 
-const SubscribePageA = styled.a`
+const SubscribePageLink = styled(Link)`
   padding: 5px 10px;
   
   background: #fff;
@@ -163,9 +164,9 @@ export const Home = () => {
           </Section>
           <Section>
             <HeroDescription>Also you can use subscribe page:</HeroDescription>
-            <SubscribePageA href={`${window.location.origin}/#/subscribe/${demoPlanAddress}`}>
-              {`${window.location.origin}/#/subscribe/${demoPlanAddress}`}
-            </SubscribePageA>
+            <SubscribePageLink to={`/subscribe/${demoPlanAddress}`}>
+              {`${window.location.origin}/subscribe/${demoPlanAddress}`}
+            </SubscribePageLink>
           </Section>
         </Container>
       </MainContainer>
